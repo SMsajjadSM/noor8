@@ -1,0 +1,15 @@
+{
+  "id": "imam-javad-proxy-prayer",
+  "slug": "imam-javad-proxy-prayer",
+  "name": "نماز نیابتی حرز امام جواد (ع)",
+  "desc": "توسط فرد قابل اعتماد",
+  "price": 150000,
+  "icon": "pendant",
+  "image": "/photo/products/niyabati-prayer.webp",
+  "tag": null,
+  "details": "",
+  "published": true,
+  "createdAt": "2026-11-09",
+  "updatedAt": "2026-11-09",
+  "order": 60
+}
