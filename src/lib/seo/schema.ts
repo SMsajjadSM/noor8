@@ -6,11 +6,12 @@ const org: Json = { "@type": "Organization", "@id": abs("/#organization"), name:
 
 export function organizationLd(s: Settings): Json {
   const ch = channels(s);
-  const sameAs = ch.filter((c) => c.kind === "instagram" || c.kind === "telegram").map((c) => c.href);
+  const phones = ch.filter((c) => c.kind === "phone" || c.kind === "phone2");
+  const sameAs = ch.filter((c) => ["instagram", "telegram", "bale", "eitaa"].includes(c.kind)).map((c) => c.href);
   return {
     "@context": "https://schema.org", ...org, logo: abs("/logo.png"),
     ...(sameAs.length ? { sameAs } : {}),
-    ...(s.phone ? { contactPoint: { "@type": "ContactPoint", telephone: ch.find((c) => c.kind === "phone")?.href.replace("tel:", ""), contactType: "customer service", availableLanguage: "fa" } } : {}),
+    ...(phones.length ? { contactPoint: phones.map((c) => ({ "@type": "ContactPoint", telephone: c.href.replace("tel:", ""), contactType: "customer service", availableLanguage: "fa" })) } : {}),
   };
 }
 

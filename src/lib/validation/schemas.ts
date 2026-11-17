@@ -78,14 +78,21 @@ export const publishSchema = z.object({
 });
 
 /* ---- Site settings ---- */
+/** Optional full https link (e.g. a Bale or Eitaa channel). Rejects other schemes such as javascript:. */
+const httpsLink = z.string().trim().max(300).refine((v) => v === "" || /^https:\/\/[^\s]+$/.test(v), "لینک کامل باشد و با https:// شروع شود").default("");
 export const settingsSchema = z.object({
   currencyUnit: z.string().trim().min(1, "واحد قیمت الزامی است").max(20),
   phone: z.string().trim().max(30),
+  phoneLabel: z.string().trim().max(40).default(""),
+  phone2: z.string().trim().max(30).default(""),
+  phone2Label: z.string().trim().max(40).default(""),
   whatsapp: z.string().trim().max(30),
   telegram: z.string().trim().max(100),
   instagram: z.string().trim().max(100),
+  bale: httpsLink,
+  eitaa: httpsLink,
   email: z.union([z.literal(""), z.email("ایمیل معتبر نیست")]),
   address: z.string().trim().max(300),
 });
 export type Settings = z.infer<typeof settingsSchema>;
-export const DEFAULT_SETTINGS: Settings = { currencyUnit: "تومان", phone: "", whatsapp: "", telegram: "", instagram: "", email: "", address: "" };
+export const DEFAULT_SETTINGS: Settings = { currencyUnit: "تومان", phone: "", phoneLabel: "", phone2: "", phone2Label: "", whatsapp: "", telegram: "", instagram: "", bale: "", eitaa: "", email: "", address: "" };

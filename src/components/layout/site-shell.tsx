@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Instagram, Mail, MessageCircle, Phone, Send } from "lucide-react";
+import { Instagram, Mail, Megaphone, MessageCircle, MessagesSquare, Phone, Send } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { getSettings } from "@/lib/content/public";
-import { channels, SITE_NAME } from "@/lib/seo/site";
+import { channels, isExternal, isPhone, isTextLink, SITE_NAME } from "@/lib/seo/site";
 import { MobileNav } from "./mobile-nav";
 
 export const NAV = [
@@ -13,7 +13,7 @@ export const NAV = [
   { href: "/about", label: "درباره ما" },
   { href: "/contact", label: "تماس با ما" },
 ];
-const ICON = { phone: Phone, whatsapp: MessageCircle, telegram: Send, instagram: Instagram, email: Mail };
+const ICON = { phone: Phone, phone2: Phone, whatsapp: MessageCircle, telegram: Send, instagram: Instagram, bale: MessagesSquare, eitaa: Megaphone, email: Mail };
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const settings = getSettings();
@@ -55,7 +55,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <div><h2 className="mb-4 font-bold">ارتباط با ما</h2>
             {ch.length ? (
               <ul className="space-y-3 text-sm text-muted">
-                {ch.map((c) => { const I = ICON[c.kind]; return <li key={c.kind}><a href={c.href} {...(c.kind !== "phone" && c.kind !== "email" ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="flex items-center gap-2 hover:text-accent"><I className="size-4" aria-hidden /><span dir="ltr">{c.display}</span></a></li>; })}
+                {ch.map((c) => { const I = ICON[c.kind]; return <li key={c.kind}><a href={c.href} {...(isExternal(c) ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="flex items-center gap-2 hover:text-accent"><I className="size-4" aria-hidden />{(isPhone(c) || isTextLink(c)) && <span>{c.label}{isPhone(c) ? ":" : ""}</span>}{!isTextLink(c) && <span dir="ltr">{c.display}</span>}</a></li>; })}
               </ul>
             ) : <p className="text-sm text-muted">برای سفارش از صفحه <Link href="/contact" className="text-accent underline">تماس با ما</Link> استفاده کنید.</p>}
           </div>

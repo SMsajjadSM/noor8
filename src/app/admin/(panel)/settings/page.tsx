@@ -9,9 +9,14 @@ import { Button, ErrorState, Field, inputCls, Skeleton, useToast } from "@/compo
 const FIELDS: { key: keyof Settings; label: string; hint?: string; ltr?: boolean }[] = [
   { key: "currencyUnit", label: "واحد قیمت", hint: "کنار قیمت محصولات نمایش داده می‌شود؛ مثلاً تومان" },
   { key: "phone", label: "شماره تماس", hint: "برای دکمه تماس و خرید تلفنی؛ مثلاً 09121234567", ltr: true },
+  { key: "phoneLabel", label: "عنوان شماره اول (اختیاری)", hint: "مثلاً «آقای احمدی» یا «بخش آقایان»؛ روی دکمه تماس نوشته می‌شود" },
+  { key: "phone2", label: "شماره تماس دوم (اختیاری)", hint: "مثلاً شماره خانم؛ خالی بگذارید اگر ندارید", ltr: true },
+  { key: "phone2Label", label: "عنوان شماره دوم (اختیاری)", hint: "مثلاً «خانم احمدی» یا «بخش بانوان»" },
   { key: "whatsapp", label: "واتساپ", hint: "شماره با کد کشور، مثلاً 989121234567", ltr: true },
   { key: "telegram", label: "تلگرام", hint: "نام کاربری بدون @", ltr: true },
   { key: "instagram", label: "اینستاگرام", hint: "نام کاربری بدون @", ltr: true },
+  { key: "bale", label: "لینک بله", hint: "لینک کامل را از خود برنامه بله کپی و اینجا Paste کنید؛ باید با https:// شروع شود. خالی بگذارید اگر ندارید", ltr: true },
+  { key: "eitaa", label: "لینک کانال ایتا", hint: "لینک کامل کانال را از ایتا کپی کنید؛ باید با https:// شروع شود", ltr: true },
   { key: "email", label: "ایمیل", ltr: true },
   { key: "address", label: "نشانی (اختیاری)" },
 ];
