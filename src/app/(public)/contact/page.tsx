@@ -18,7 +18,7 @@ export default function ContactPage() {
       {ch.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-line p-6 text-muted">اطلاعات تماس در حال تکمیل است.</p>
       ) : (
-        <ul className="!list-none !space-y-3 !pr-0">
+        <ul className="list-none! space-y-3! pr-0!">
           {ch.map((c) => {
             const I = ICON[c.kind];
             const ext = c.kind !== "phone" && c.kind !== "email";
