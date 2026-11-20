@@ -12,6 +12,7 @@ export const NAV = [
   { href: "/articles", label: "مقالات" },
   { href: "/about", label: "درباره ما" },
   { href: "/contact", label: "تماس با ما" },
+  { href: "/admin", label:" مدیریت" },
 ];
 const ICON = { phone: Phone, phone2: Phone, whatsapp: MessageCircle, telegram: Send, instagram: Instagram, bale: MessagesSquare, eitaa: Megaphone, email: Mail };
 
