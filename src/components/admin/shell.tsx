@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { FileText, Images, LayoutDashboard, LogOut, Menu, Package, Rocket, Settings, X } from "lucide-react";
+import { FileText, Images, LayoutDashboard, LogOut, Menu, Package, Rocket, Settings, Tags, X } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { api } from "@/lib/admin/api";
 import { ToastProvider } from "./ui";
@@ -11,6 +11,7 @@ const NAV = [
   { href: "/admin/dashboard", label: "داشبورد", icon: LayoutDashboard },
   { href: "/admin/products", label: "محصولات", icon: Package },
   { href: "/admin/articles", label: "مقالات", icon: FileText },
+  { href: "/admin/categories", label: "دسته‌بندی‌ها", icon: Tags },
   { href: "/admin/media", label: "رسانه", icon: Images },
   { href: "/admin/publish", label: "انتشار", icon: Rocket },
   { href: "/admin/settings", label: "تنظیمات", icon: Settings },

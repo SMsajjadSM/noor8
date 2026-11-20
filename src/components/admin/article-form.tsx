@@ -5,14 +5,14 @@ import { ArrowDown, ArrowUp, Copy, Trash2 } from "lucide-react";
 import { adminImg, api, ApiFail } from "@/lib/admin/api";
 import { useLoad } from "@/lib/admin/use-load";
 import { jalali } from "@/lib/utils/format";
-import { articleInputSchema, type Article, type Block } from "@/lib/validation/schemas";
+import { articleInputSchema, type Article, type Block, type Categories } from "@/lib/validation/schemas";
 import { ArticleBody } from "@/components/public/article-body";
 import { ImagePicker } from "./image-picker";
 import { PageHead } from "./page-head";
 import { Button, ConfirmDialog, ErrorState, Field, inputCls, Skeleton, Switch, useToast } from "./ui";
 
 type KBlock = { k: number; b: Block };
-type Form = { slug: string; title: string; excerpt: string; date: string; readTime: string; image: string; published: boolean };
+type Form = { slug: string; title: string; excerpt: string; date: string; readTime: string; image: string; category: string; published: boolean };
 let keySeq = 0; // stable React keys for blocks
 const todayIso = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Tehran" });
 const TYPES: [Block["type"], string][] = [["h2", "عنوان بخش"], ["h3", "زیرعنوان"], ["p", "پاراگراف"], ["ul", "فهرست نقطه‌ای"], ["ol", "فهرست شماره‌ای"], ["quote", "نقل‌قول / حدیث"], ["image", "تصویر"]];
@@ -30,8 +30,9 @@ export function ArticleForm({ id }: { id?: string }) {
   const router = useRouter();
   const toast = useToast();
   const wrap = (bs: Block[]): KBlock[] => bs.map((b) => ({ k: ++keySeq, b }));
+  const cats = useLoad(() => api<Categories>("GET", "/api/admin/categories"));
   const existing = useLoad(async () => (id ? api<{ item: Article; sha: string }>("GET", `/api/admin/articles/${id}`) : null));
-  const [form, setForm] = useState<Form | null>(id ? null : { slug: "", title: "", excerpt: "", date: todayIso(), readTime: "5", image: "", published: false });
+  const [form, setForm] = useState<Form | null>(id ? null : { slug: "", title: "", excerpt: "", date: todayIso(), readTime: "5", image: "", category: "", published: false });
   const [blocks, setBlocks] = useState<KBlock[]>(() => (id ? [] : wrap([blank("p")])));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<"edit" | "preview">("edit");
@@ -40,7 +41,7 @@ export function ArticleForm({ id }: { id?: string }) {
 
   if (!form && existing.data) {
     const a = existing.data.item;
-    setForm({ slug: a.slug, title: a.title, excerpt: a.excerpt, date: a.date, readTime: String(a.readTime), image: a.image, published: a.published });
+    setForm({ slug: a.slug, title: a.title, excerpt: a.excerpt, date: a.date, readTime: String(a.readTime), image: a.image, category: a.category ?? "", published: a.published });
     setBlocks(wrap(a.content));
   }
   if (existing.error) return <ErrorState message={existing.error} onRetry={existing.reload} />;
@@ -58,7 +59,7 @@ export function ArticleForm({ id }: { id?: string }) {
 
   function build() {
     return {
-      ...form!, readTime: Number(form!.readTime),
+      ...form!, readTime: Number(form!.readTime), category: form!.category || null,
       content: blocks.map(({ b }) => (b.type === "ul" || b.type === "ol" ? { ...b, items: b.items.map((s) => s.trim()).filter(Boolean) } : b)),
     };
   }
@@ -161,6 +162,9 @@ export function ArticleForm({ id }: { id?: string }) {
             <div className="space-y-5 rounded-2xl border border-line bg-surface p-5">
               <Switch checked={form.published} onChange={(v) => set("published", v)} label={form.published ? "آماده انتشار" : "پیش‌نویس"} />
               <Field label="تاریخ انتشار" error={errors.date} hint={`تاریخ شمسی: ${jalali(form.date)}`}>{(i) => <input id={i} type="date" dir="ltr" value={form.date} onChange={(e) => set("date", e.target.value)} className={inputCls} />}</Field>
+              <Field label="دسته‌بندی" error={errors.category} hint={cats.data && cats.data.articles.length === 0 ? "ابتدا از منوی «دسته‌بندی‌ها» دسته بسازید" : undefined}>
+                {(i) => <select id={i} value={form.category} onChange={(e) => set("category", e.target.value)} className={inputCls}><option value="">بدون دسته‌بندی</option>{cats.data?.articles.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}</select>}
+              </Field>
               <Field label="زمان مطالعه (دقیقه)" error={errors.readTime}>
                 {(i) => (
                   <div className="flex gap-2">

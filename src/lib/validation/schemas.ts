@@ -42,6 +42,8 @@ export const productSchema = z.object({
   icon: z.string().trim().min(1).max(30),
   image: imagePathSchema,
   tag: z.string().trim().max(30).nullable(),
+  /** Slug of a category from data/categories.json (optional). */
+  category: slugSchema.nullable().default(null),
   details: z.string().max(20000),
   /** Display order in listings (lower first). Optional; defaults to 100. */
   order: z.number().int().min(0).max(9999).default(100),
@@ -60,6 +62,7 @@ export const articleSchema = z.object({
   date: dateSchema,
   readTime: z.number().int().min(1).max(120),
   image: imagePathSchema,
+  category: slugSchema.nullable().default(null),
   content: z.array(blockSchema).min(1).max(500),
   published: z.boolean(),
   createdAt: dateSchema,
@@ -96,3 +99,16 @@ export const settingsSchema = z.object({
 });
 export type Settings = z.infer<typeof settingsSchema>;
 export const DEFAULT_SETTINGS: Settings = { currencyUnit: "تومان", phone: "", phoneLabel: "", phone2: "", phone2Label: "", whatsapp: "", telegram: "", instagram: "", bale: "", eitaa: "", email: "", address: "" };
+
+/* ---- Categories (separate lists for products and articles) ---- */
+export const categorySchema = z.object({
+  slug: slugSchema,
+  name: z.string().trim().min(2, "حداقل ۲ نویسه").max(60, "حداکثر ۶۰ نویسه"),
+  description: z.string().trim().max(300, "حداکثر ۳۰۰ نویسه").default(""),
+});
+export type Category = z.infer<typeof categorySchema>;
+const uniqueSlugs = (a: Category[]) => new Set(a.map((c) => c.slug)).size === a.length;
+const categoryList = z.array(categorySchema).max(30).refine(uniqueSlugs, "آدرس (slug) دسته‌ها باید یکتا باشد").default([]);
+export const categoriesSchema = z.object({ products: categoryList, articles: categoryList });
+export type Categories = z.infer<typeof categoriesSchema>;
+export const DEFAULT_CATEGORIES: Categories = { products: [], articles: [] };

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { cache } from "react";
-import { articleSchema, DEFAULT_SETTINGS, productSchema, settingsSchema, type Article, type Product, type Settings } from "@/lib/validation/schemas";
+import { articleSchema, categoriesSchema, DEFAULT_CATEGORIES, DEFAULT_SETTINGS, productSchema, settingsSchema, type Article, type Categories, type Category, type Product, type Settings } from "@/lib/validation/schemas";
 
 /** Build-time readers for the public site. Invalid files fail the build loudly instead of shipping broken pages. */
 const dataDir = (...p: string[]) => path.join(/* turbopackIgnore: true */ process.cwd(), "data", ...p);
@@ -32,3 +32,20 @@ export const getSettings = cache((): Settings => {
   if (!fs.existsSync(f)) return DEFAULT_SETTINGS;
   return settingsSchema.parse({ ...DEFAULT_SETTINGS, ...JSON.parse(fs.readFileSync(f, "utf8")) });
 });
+
+export const getCategories = cache((): Categories => {
+  const f = dataDir("categories.json");
+  if (!fs.existsSync(f)) return DEFAULT_CATEGORIES;
+  return categoriesSchema.parse(JSON.parse(fs.readFileSync(f, "utf8")));
+});
+export const getCategory = (kind: "products" | "articles", slug: string | null | undefined): Category | undefined =>
+  slug ? getCategories()[kind].find((c) => c.slug === slug) : undefined;
+
+/** Categories that have at least one published item, with those items. Unknown/removed category slugs are ignored. */
+export const productCategories = () =>
+  getCategories().products.map((category) => ({ category, items: getProducts().filter((p) => p.category === category.slug) })).filter((x) => x.items.length > 0);
+export const articleCategories = () =>
+  getCategories().articles.map((category) => ({ category, items: getArticles().filter((a) => a.category === category.slug) })).filter((x) => x.items.length > 0);
+
+/** Thin category pages (fewer items than this) are kept out of Google: noindex + not in the sitemap. */
+export const MIN_INDEXABLE_CATEGORY = 2;

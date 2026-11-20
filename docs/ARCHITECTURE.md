@@ -28,6 +28,14 @@ Store (interface)  ── GitHub store ──► GitHub REST API (Git Data)
 - مقاله: لیست بلوک‌های `h2 h3 p quote ul ol image`. بلوک جدید = یک خط در `blockSchema` + یک `case` در `ArticleBody`.
 - محصول: فیلدهای ساختار قبلی شما + `order` (اختیاری) برای ترتیب نمایش.
 
+## دسته‌بندی‌ها
+
+- `data/categories.json`: دو فهرست جدا (`products` و `articles`) با `slug`، `name`، `description`.
+- هر محصول/مقاله فیلد اختیاری `category` (slug) دارد. slug ناموجود در صفحات عمومی نادیده گرفته می‌شود (بدون خطا).
+- ذخیره دسته‌ها در پنل اگر دسته‌ای حذف شود که هنوز استفاده می‌شود، با 409 رد می‌شود.
+- صفحه هر دسته فقط وقتی ساخته می‌شود که حداقل یک مورد منتشرشده داشته باشد. اگر کمتر از `MIN_INDEXABLE_CATEGORY` (۲) مورد داشته باشد: `noindex, follow` و خارج از Sitemap.
+- Breadcrumb و JSON-LD صفحه محصول/مقاله شامل دسته است؛ «محصولات مرتبط» ابتدا هم‌دسته‌ها را نشان می‌دهد.
+
 ## لایه ذخیره‌سازی (`src/lib/store`)
 
 یک interface (`list / readText / readFile / readBinary / commit`). پیاده‌سازی GitHub:

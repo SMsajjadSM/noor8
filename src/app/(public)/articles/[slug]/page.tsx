@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/layout/json-ld";
 import { ArticleCard, ProductCard, SectionHead } from "@/components/public/cards";
 import { ArticleBody } from "@/components/public/article-body";
 import { BuyCta } from "@/components/public/buy-cta";
-import { getArticle, getArticles, getProducts, getSettings } from "@/lib/content/public";
+import { getArticle, getArticles, getCategory, getProducts, getSettings } from "@/lib/content/public";
 import { articleLd } from "@/lib/seo/schema";
 import { pageMeta } from "@/lib/seo/site";
 import { jalali } from "@/lib/utils/format";
@@ -24,17 +24,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const a = getArticle((await params).slug);
   if (!a) notFound();
   const settings = getSettings();
-  const more = getArticles().filter((x) => x.id !== a.id).slice(0, 2);
+  const cat = getCategory("articles", a.category);
+  const others = getArticles().filter((x) => x.id !== a.id);
+  const more = [...others.filter((x) => cat && x.category === cat.slug), ...others.filter((x) => !cat || x.category !== cat.slug)].slice(0, 2);
   const products = getProducts().slice(0, 4);
   const toc = a.content.map((b, i) => ({ b, i })).filter(({ b }) => b.type === "h2") as { b: { type: "h2"; text: string }; i: number }[];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <JsonLd data={articleLd(a)} />
-      <Breadcrumbs items={[{ name: "مقالات", path: "/articles" }, { name: a.title, path: `/articles/${a.slug}` }]} />
+      <Breadcrumbs items={[{ name: "مقالات", path: "/articles" }, ...(cat ? [{ name: cat.name, path: `/articles/category/${cat.slug}` }] : []), { name: a.title, path: `/articles/${a.slug}` }]} />
       <article className="mx-auto max-w-3xl">
         <header>
-          <h1 className="text-3xl font-bold leading-[1.7] sm:text-4xl">{a.title}</h1>
+          {cat && <Link href={`/articles/category/${cat.slug}`} className="inline-block rounded-full border border-line bg-surface px-3 py-1 text-sm text-accent hover:border-accent">{cat.name}</Link>}
+          <h1 className="mt-3 text-3xl font-bold leading-[1.7] sm:text-4xl">{a.title}</h1>
           <p className="mt-4 text-sm text-muted">
             منتشرشده در <time dateTime={a.date}>{jalali(a.date)}</time>
             {a.updatedAt > a.date && <> · به‌روزرسانی <time dateTime={a.updatedAt}>{jalali(a.updatedAt)}</time></>} · {a.readTime.toLocaleString("fa-IR")} دقیقه مطالعه

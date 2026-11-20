@@ -33,6 +33,7 @@ export default function PublishPage() {
     products.data?.items.forEach(({ item }) => m.set(`data/products/${item.id}.json`, `محصول: ${item.name}`));
     articles.data?.items.forEach(({ item }) => m.set(`data/articles/${item.id}.json`, `مقاله: ${item.title}`));
     m.set("data/settings.json", "تنظیمات سایت");
+    m.set("data/categories.json", "دسته‌بندی‌ها");
     return m;
   }, [products.data, articles.data]);
   const label = (p: string) => names.get(p) ?? (p.startsWith("public/photo/") ? `تصویر: ${p.split("/").pop()}` : p);

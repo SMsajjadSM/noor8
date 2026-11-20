@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { JsonLd } from "@/components/layout/json-ld";
 import { ArticleCard, ProductCard, SectionHead } from "@/components/public/cards";
 import { BuyCta } from "@/components/public/buy-cta";
-import { getArticles, getProduct, getProducts, getSettings } from "@/lib/content/public";
+import { getArticles, getCategory, getProduct, getProducts, getSettings } from "@/lib/content/public";
 import { productLd } from "@/lib/seo/schema";
 import { describe, pageMeta } from "@/lib/seo/site";
 import { formatPrice } from "@/lib/utils/format";
@@ -25,14 +25,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const p = getProduct((await params).slug);
   if (!p) notFound();
   const settings = getSettings();
-  const related = getProducts().filter((x) => x.id !== p.id).slice(0, 4);
+  const cat = getCategory("products", p.category);
+  const others = getProducts().filter((x) => x.id !== p.id);
+  // Same-category products first: stronger internal links between related items.
+  const related = [...others.filter((x) => cat && x.category === cat.slug), ...others.filter((x) => !cat || x.category !== cat.slug)].slice(0, 4);
   const articles = getArticles().slice(0, 2);
   const paragraphs = p.details.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <JsonLd data={productLd(p, text(p))} />
-      <Breadcrumbs items={[{ name: "محصولات", path: "/products" }, { name: p.name, path: `/products/${p.slug}` }]} />
+      <Breadcrumbs items={[{ name: "محصولات", path: "/products" }, ...(cat ? [{ name: cat.name, path: `/products/category/${cat.slug}` }] : []), { name: p.name, path: `/products/${p.slug}` }]} />
 
       <div className="grid gap-10 lg:grid-cols-2">
         <div className="relative aspect-square overflow-hidden rounded-[2rem] border border-line bg-white">
@@ -41,6 +44,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
 
         <div className="space-y-6">
+          {cat && <Link href={`/products/category/${cat.slug}`} className="inline-block rounded-full border border-line bg-surface px-3 py-1 text-sm text-accent hover:border-accent">{cat.name}</Link>}
           <h1 className="text-3xl font-bold leading-[1.6]">{p.name}</h1>
           <p className="text-lg leading-9 text-muted">{p.desc}</p>
           <p className="text-3xl font-bold text-accent">{p.price > 0 ? formatPrice(p.price, settings.currencyUnit) : "برای قیمت تماس بگیرید"}</p>
