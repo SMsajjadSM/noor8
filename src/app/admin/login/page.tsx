@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { inputCls } from "@/components/admin/ui";
@@ -36,7 +37,7 @@ export default function LoginPage() {
       <div className="absolute left-4 top-4"><ThemeToggle /></div>
       <form onSubmit={submit} className="relative w-full max-w-sm space-y-5 rounded-3xl border border-line bg-surface p-8 shadow-xl">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.webp" alt="نور هشتم" width={84} height={90} className="mx-auto" />
+        <Link href="/" aria-label="بازگشت به سایت نور هشتم" className="mx-auto block w-fit"><img src="/logo.webp" alt="نور هشتم" width={84} height={90} /></Link>
         <div className="text-center">
           <h1 className="text-xl font-bold">ورود به پنل مدیریت</h1>
           <p className="mt-1 text-sm text-muted">نام کاربری و رمز عبور را وارد کنید</p>
@@ -54,6 +55,7 @@ export default function LoginPage() {
           {busy && <Loader2 className="size-4 animate-spin" aria-hidden />}
           ورود
         </button>
+        <p className="text-center text-sm"><Link href="/" className="text-muted hover:text-accent">← بازگشت به سایت</Link></p>
       </form>
     </main>
   );

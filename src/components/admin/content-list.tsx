@@ -95,21 +95,23 @@ export function ContentList({ kind }: { kind: Kind }) {
           {shown.map((row) => {
             const { item } = row;
             return (
-              <li key={item.id} className="flex flex-wrap items-center gap-4 p-4">
+              <li key={item.id} className="grid grid-cols-[4rem_minmax(0,1fr)] gap-x-3 gap-y-3 p-4 sm:grid-cols-[4rem_minmax(0,1fr)_auto_auto] sm:items-center sm:gap-x-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={adminImg(item.image)} alt="" loading="lazy" className="size-16 shrink-0 rounded-lg border border-line bg-white object-contain" />
-                <div className="min-w-0 flex-1">
-                  <Link href={`/admin/${kind}/${item.id}`} className="block truncate font-medium hover:text-accent">{titleOf(item)}</Link>
-                  <p className="mt-0.5 truncate text-xs text-muted" dir="ltr">/{item.slug}</p>
-                  <p className="mt-1 text-xs text-muted">
+                <div className="min-w-0">
+                  <Link href={`/admin/${kind}/${item.id}`} className="line-clamp-2 break-words font-medium leading-7 hover:text-accent">{titleOf(item)}</Link>
+                  <p className="mt-0.5 truncate text-right text-xs text-muted" dir="ltr">/{item.slug}</p>
+                  <p className="mt-1 text-xs leading-6 text-muted">
                     {isProduct(item) ? formatPrice(item.price, settings.data?.currencyUnit ?? "تومان") + " · " : ""}آخرین ویرایش: {jalali(item.updatedAt)}
                   </p>
                 </div>
-                <Badge tone={item.published ? "ok" : "muted"}>{item.published ? "آماده انتشار" : "پیش‌نویس"}</Badge>
+                <div className="col-span-2 flex items-center justify-between gap-3 border-t border-line pt-3 sm:contents">
+                  <Badge tone={item.published ? "ok" : "muted"}>{item.published ? "آماده انتشار" : "پیش‌نویس"}</Badge>
                 <div className="flex gap-1">
                   <Link href={`/admin/${kind}/${item.id}`} aria-label={`ویرایش ${titleOf(item)}`} className="grid size-9 place-items-center rounded-lg text-muted hover:bg-surface-2 hover:text-text"><Pencil className="size-4" /></Link>
                   <button type="button" aria-label={item.published ? "برگرداندن به پیش‌نویس" : "علامت‌گذاری برای انتشار"} onClick={() => toggle(row)} className="grid size-9 place-items-center rounded-lg text-muted hover:bg-surface-2 hover:text-text">{item.published ? <EyeOff className="size-4" /> : <Eye className="size-4" />}</button>
                   <button type="button" aria-label={`حذف ${titleOf(item)}`} onClick={() => setDel(item)} className="grid size-9 place-items-center rounded-lg text-muted hover:bg-danger/10 hover:text-danger"><Trash2 className="size-4" /></button>
+                </div>
                 </div>
               </li>
             );

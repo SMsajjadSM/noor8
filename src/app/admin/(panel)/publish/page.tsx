@@ -100,7 +100,7 @@ export default function PublishPage() {
 
       <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface p-4 text-sm">
         <span className="text-muted">آخرین وضعیت:</span><Badge tone={dl[1]}>{dl[0]}</Badge>
-        {d?.url && <a href={d.url} target="_blank" rel="noopener noreferrer" className="text-accent underline" dir="ltr">{d.url}</a>}
+        {d?.url && <a href={d.url} target="_blank" rel="noopener noreferrer" className="break-all text-accent underline" dir="ltr">{d.url}</a>}
         {(d?.state === "failure" || d?.state === "error") && <span className="text-danger">ساخت سایت ناموفق بود؛ لاگ را در Vercel بررسی کنید.</span>}
       </div>
 
@@ -119,7 +119,7 @@ export default function PublishPage() {
               <li key={x.path}>
                 <label className="flex cursor-pointer items-center gap-3 p-4 hover:bg-surface-2">
                   <input type="checkbox" checked={sel.has(x.path)} onChange={() => toggle(x.path)} className="size-4 accent-[var(--accent)]" />
-                  <span className="flex-1 truncate">{label(x.path)}</span>
+                  <span className="min-w-0 flex-1 truncate">{label(x.path)}</span>
                   <Badge tone={ST[x.status][1]}>{ST[x.status][0]}</Badge>
                 </label>
               </li>

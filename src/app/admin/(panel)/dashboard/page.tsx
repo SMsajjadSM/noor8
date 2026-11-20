@@ -36,21 +36,21 @@ export default function Dashboard() {
       </div>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-line bg-surface p-5">
+        <div className="min-w-0 rounded-2xl border border-line bg-surface p-5">
           <h2 className="mb-3 font-bold">آخرین Deploy</h2>
           {pub.loading ? <Skeleton className="h-8 w-40" /> : pub.error ? <p className="text-sm text-danger">{pub.error}</p> : pub.data ? (
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex flex-wrap items-center gap-3 text-sm">
               <Badge tone={(DEPLOY[pub.data.deploy.state] ?? DEPLOY.unknown)![1]}>{(DEPLOY[pub.data.deploy.state] ?? DEPLOY.unknown)![0]}</Badge>
-              {pub.data.deploy.url && <a href={pub.data.deploy.url} target="_blank" rel="noopener noreferrer" className="text-accent underline" dir="ltr">{pub.data.deploy.url}</a>}
+              {pub.data.deploy.url && <a href={pub.data.deploy.url} target="_blank" rel="noopener noreferrer" className="break-all text-accent underline" dir="ltr">{pub.data.deploy.url}</a>}
             </div>
           ) : <p className="text-sm text-muted">اطلاعات Deploy فقط با اتصال GitHub در دسترس است.</p>}
         </div>
-        <div className="rounded-2xl border border-line bg-surface p-5">
+        <div className="min-w-0 rounded-2xl border border-line bg-surface p-5">
           <h2 className="mb-3 font-bold">آخرین تغییرات</h2>
           {pub.loading ? <Skeleton className="h-24" /> : pub.data?.recent.length ? (
             <ul className="space-y-2 text-sm">
               {pub.data.recent.slice(0, 6).map((c) => (
-                <li key={c.sha} className="flex gap-3"><code className="text-xs text-muted" dir="ltr">{c.sha}</code><span className="truncate">{c.message}</span></li>
+                <li key={c.sha} className="flex min-w-0 gap-3"><code className="shrink-0 text-xs leading-6 text-muted" dir="ltr">{c.sha}</code><span className="min-w-0 break-words [overflow-wrap:anywhere]">{c.message}</span></li>
               ))}
             </ul>
           ) : <p className="text-sm text-muted">هنوز تغییری ثبت نشده است.</p>}

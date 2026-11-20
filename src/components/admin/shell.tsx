@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { FileText, Images, LayoutDashboard, LogOut, Menu, Package, Rocket, Settings, Tags, X } from "lucide-react";
+import { ExternalLink, FileText, Images, LayoutDashboard, LogOut, Menu, Package, Rocket, Settings, Tags, X } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { api } from "@/lib/admin/api";
 import { ToastProvider } from "./ui";
@@ -44,7 +44,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ToastProvider>
-      <div className="min-h-dvh lg:grid lg:grid-cols-[16rem_1fr]">
+      <div className="min-h-dvh lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
         <aside className="sticky top-0 hidden h-dvh flex-col gap-6 border-l border-line bg-surface p-4 lg:flex">
           <Brand />
           {nav}
@@ -66,7 +66,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         )}
 
-        <main className="mx-auto w-full max-w-6xl p-4 sm:p-8">{children}</main>
+        <main className="mx-auto w-full min-w-0 max-w-6xl p-4 sm:p-8">{children}</main>
       </div>
     </ToastProvider>
   );
@@ -84,9 +84,12 @@ function Brand({ compact }: { compact?: boolean }) {
 
 function Footer({ onLogout }: { onLogout: () => void }) {
   return (
-    <div className="flex items-center justify-between border-t border-line pt-4">
-      <ThemeToggle />
-      <button type="button" onClick={onLogout} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted hover:bg-surface-2 hover:text-text"><LogOut className="size-4" aria-hidden />خروج</button>
+    <div className="space-y-3 border-t border-line pt-4">
+      <Link href="/" target="_blank" rel="noopener" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted hover:bg-surface-2 hover:text-text"><ExternalLink className="size-4" aria-hidden />مشاهده سایت</Link>
+      <div className="flex items-center justify-between">
+        <ThemeToggle />
+        <button type="button" onClick={onLogout} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted hover:bg-surface-2 hover:text-text"><LogOut className="size-4" aria-hidden />خروج</button>
+      </div>
     </div>
   );
 }
